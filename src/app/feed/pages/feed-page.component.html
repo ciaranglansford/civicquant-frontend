@@ -1,0 +1,111 @@
+@if (state$ | async; as state) {
+  <main class="feed-shell">
+    <section class="brand-banner">
+      <p class="brand-overline">Civicquant Intelligence</p>
+      <div class="brand-banner-main">
+        <div>
+          <h1>Market Event Wire</h1>
+          <p class="brand-copy">
+            A public information stream of verified feed events, designed for fast reading and
+            structured decision support.
+          </p>
+        </div>
+
+        <div class="brand-pills" aria-label="Feed characteristics">
+          <span class="pill">Feed Events API</span>
+          <span class="pill">Continuous refresh</span>
+          <span class="pill">Signal-grade updates</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="feed-layout">
+      <div class="feed-column">
+        <header class="feed-toolbar">
+          <div>
+            <p class="feed-section-label">Live Desk</p>
+            <h2>Latest Signals</h2>
+          </div>
+
+          <label class="topic-filter" for="topic-select">
+            <span>Topic</span>
+            <select
+              id="topic-select"
+              [value]="state.selectedTopic ?? ''"
+              (change)="onTopicChange($any($event.target).value)"
+            >
+              <option value="">All topics</option>
+              @for (option of topicOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+          </label>
+        </header>
+
+        @if (state.error && state.items.length > 0) {
+          <section class="inline-error" role="status" aria-live="polite">
+            <p>{{ state.error }}</p>
+            <button type="button" (click)="onRetry()">Retry</button>
+          </section>
+        }
+
+        @if (state.loading && state.items.length === 0) {
+          <section class="state-card" aria-live="polite">
+            <h3>Loading feed...</h3>
+            <p>Retrieving the latest events.</p>
+          </section>
+        } @else if (state.error && state.items.length === 0) {
+          <section class="state-card state-card--error" aria-live="assertive">
+            <h3>Unable to load feed</h3>
+            <p>{{ state.error }}</p>
+            <button type="button" (click)="onRetry()">Try again</button>
+          </section>
+        } @else if (state.empty) {
+          <section class="state-card">
+            <h3>No feed events available</h3>
+            <p>Check back shortly for new updates.</p>
+          </section>
+        } @else {
+          <section class="feed-collection" aria-live="polite">
+            @for (item of state.items; track item.id) {
+              <article class="feed-card">
+                <header class="feed-card-meta">
+                  <span class="feed-topic">{{ item.topicLabel }}</span>
+                  <span class="feed-time">{{ item.eventTimeLabel }}</span>
+                </header>
+                <p class="feed-summary">{{ item.summary }}</p>
+                <p class="feed-id">Event #{{ item.id }}</p>
+              </article>
+            }
+          </section>
+        }
+
+        @if (state.nextCursor) {
+          <div class="feed-actions">
+            <button
+              type="button"
+              class="load-more"
+              [disabled]="state.loadingMore"
+              (click)="onLoadMore()"
+            >
+              {{ state.loadingMore ? 'Loading older events...' : 'Load more events' }}
+            </button>
+          </div>
+        }
+      </div>
+
+      <aside class="feed-sidepanel" aria-label="Editorial standards">
+        <h3>Information Standard</h3>
+        <p>
+          Feed entries are rendered directly from event-level responses, with strict ordering and
+          id-based upsert behavior.
+        </p>
+        <ul>
+          <li>Ordered exactly as delivered by the backend.</li>
+          <li>Duplicates are replaced by id, never repeated.</li>
+          <li>Timestamps are normalized in one dedicated adapter.</li>
+        </ul>
+      </aside>
+    </section>
+  </main>
+}
