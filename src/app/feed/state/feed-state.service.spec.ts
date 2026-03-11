@@ -207,6 +207,8 @@ function event(id: number, topic: FeedEventDto['topic'] = 'macro_econ', summary?
     topic,
     summary: summary ?? `event ${id}`,
     event_time: '2026-03-01 20:28:48.000',
+    impact_score: 82,
   };
 }
+
 

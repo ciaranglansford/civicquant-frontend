@@ -1,20 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Mono:wght@500&family=Manrope:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=Libre+Franklin:wght@400;500;600;700&family=Source+Serif+4:wght@500;600;700&display=swap');
 
 :root {
-  --cq-bg: #f1ede6;
-  --cq-bg-deep: #e4ddd0;
-  --cq-surface: #f8f4eb;
-  --cq-surface-strong: #fffdf8;
-  --cq-border: #d7ccbc;
-  --cq-border-strong: #c9b89f;
-  --cq-ink: #231b13;
-  --cq-muted: #665848;
-  --cq-accent: #9b6b2f;
-  --cq-accent-soft: #efe2cc;
-  --cq-accent-ink: #6f4512;
-  --cq-error-soft: #fff2ef;
-  --cq-error-border: #f1c0b7;
-  --cq-error-ink: #7f1f12;
+  --cq-bg: #eaf1fb;
+  --cq-bg-deep: #dce7f7;
+  --cq-surface: #f4f8ff;
+  --cq-surface-strong: #ffffff;
+  --cq-border: #c9d8ee;
+  --cq-border-strong: #9db6df;
+  --cq-ink: #102a4f;
+  --cq-muted: #4f688d;
+  --cq-accent: #2d73bf;
+  --cq-accent-soft: #e5effd;
+  --cq-accent-ink: #1f5d9c;
+  --cq-error-soft: #fff2f2;
+  --cq-error-border: #f1c6c6;
+  --cq-error-ink: #8a2a2a;
 }
 
 * {
@@ -28,18 +28,18 @@ body {
 }
 
 body {
-  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  font-family: 'Libre Franklin', 'Segoe UI', sans-serif;
   color: var(--cq-ink);
   background:
-    radial-gradient(circle at 2% 0%, rgb(155 107 47 / 0.11) 0%, transparent 32%),
-    radial-gradient(circle at 100% 4%, rgb(90 59 29 / 0.13) 0%, transparent 35%),
+    radial-gradient(circle at 0% 0%, rgb(45 115 191 / 0.16) 0%, transparent 34%),
+    radial-gradient(circle at 100% 8%, rgb(27 74 143 / 0.17) 0%, transparent 33%),
     linear-gradient(180deg, var(--cq-bg) 0%, var(--cq-bg-deep) 100%);
 }
 
 h1,
 h2,
 h3 {
-  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-family: 'Source Serif 4', Georgia, serif;
   font-weight: 600;
   letter-spacing: 0.01em;
 }

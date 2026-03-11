@@ -1,30 +1,83 @@
 @if (state$ | async; as state) {
-  <main class="feed-shell">
-    <section class="brand-banner">
-      <p class="brand-overline">Civicquant Intelligence</p>
-      <div class="brand-banner-main">
-        <div>
-          <h1>Market Event Wire</h1>
-          <p class="brand-copy">
-            A public information stream of verified feed events, designed for fast reading and
-            structured decision support.
-          </p>
+  @let breakingItems = getBreakingEvents(state.items);
+  @let leadItem = state.items.length > 0 ? state.items[0] : null;
+  @let selectedItem = getSelectedEvent(state.items);
+
+  <main class="cq-shell">
+    <header class="terminal-header">
+      <div class="terminal-header-top">
+        <div class="terminal-brand">
+          <p class="terminal-overline">CivicQuant Intelligence Desk</p>
+          <h1>CivicQuant Signal Terminal</h1>
         </div>
 
-        <div class="brand-pills" aria-label="Feed characteristics">
-          <span class="pill">Feed Events API</span>
-          <span class="pill">Continuous refresh</span>
-          <span class="pill">Signal-grade updates</span>
+        <nav class="terminal-nav" aria-label="Main sections">
+          <a href="#live-events" class="terminal-nav-link terminal-nav-link--active">Live Events</a>
+          <a href="#blog-section" class="terminal-nav-link">Blog</a>
+          <a href="#news-section" class="terminal-nav-link">News</a>
+        </nav>
+      </div>
+
+      <div class="ticker-tape" aria-label="Market ticker tape">
+        <div class="ticker-track">
+          @for (ticker of marketTickers; track ticker.symbol) {
+            <article class="ticker-pill">
+              <span class="ticker-pill-symbol">{{ ticker.symbol }}</span>
+              <span class="ticker-pill-price">{{ ticker.price }}</span>
+              <span class="ticker-pill-change" [class.negative]="ticker.changePct24h.startsWith('-')">
+                {{ ticker.changePct24h }}
+              </span>
+            </article>
+          }
+
+          @for (ticker of marketTickers; track 'repeat-' + ticker.symbol) {
+            <article class="ticker-pill" aria-hidden="true">
+              <span class="ticker-pill-symbol">{{ ticker.symbol }}</span>
+              <span class="ticker-pill-price">{{ ticker.price }}</span>
+              <span class="ticker-pill-change" [class.negative]="ticker.changePct24h.startsWith('-')">
+                {{ ticker.changePct24h }}
+              </span>
+            </article>
+          }
         </div>
       </div>
-    </section>
+    </header>
 
-    <section class="feed-layout">
-      <div class="feed-column">
-        <header class="feed-toolbar">
+    <section class="terminal-grid">
+      <aside class="terminal-panel panel--breaking" aria-label="Breaking signals">
+        <header class="panel-title-row">
+          <h2>Breaking Signals</h2>
+        </header>
+
+        @if (breakingItems.length === 0) {
+          <p class="panel-empty">No signals yet. New events will appear here as they arrive.</p>
+        } @else {
+          <div class="breaking-list">
+            @for (item of breakingItems; track item.id) {
+              <button
+                type="button"
+                class="breaking-item"
+                [class.breaking-item--selected]="selectedItem?.id === item.id"
+                (click)="onSelectEvent(item.id)"
+              >
+                <p class="breaking-kicker">Breaking Signal</p>
+                <p class="breaking-summary">{{ item.summary }}</p>
+                <div class="breaking-meta">
+                  <span>{{ item.topicLabel }}</span>
+                  <span>{{ item.eventTimeLabel }}</span>
+                  <span>Event #{{ item.id }}</span>
+                </div>
+              </button>
+            }
+          </div>
+        }
+      </aside>
+
+      <section id="live-events" class="terminal-panel panel--feed" aria-label="Live event feed">
+        <header class="feed-header-row">
           <div>
-            <p class="feed-section-label">Live Desk</p>
-            <h2>Latest Signals</h2>
+            <p class="feed-section-eyebrow">Current Events</p>
+            <h2>Live Event Feed</h2>
           </div>
 
           <label class="topic-filter" for="topic-select">
@@ -51,33 +104,54 @@
 
         @if (state.loading && state.items.length === 0) {
           <section class="state-card" aria-live="polite">
-            <h3>Loading feed...</h3>
-            <p>Retrieving the latest events.</p>
+            <h3>Loading current events...</h3>
+            <p>Pulling the latest event stream.</p>
           </section>
         } @else if (state.error && state.items.length === 0) {
           <section class="state-card state-card--error" aria-live="assertive">
-            <h3>Unable to load feed</h3>
+            <h3>Unable to load events</h3>
             <p>{{ state.error }}</p>
             <button type="button" (click)="onRetry()">Try again</button>
           </section>
         } @else if (state.empty) {
           <section class="state-card">
-            <h3>No feed events available</h3>
-            <p>Check back shortly for new updates.</p>
+            <h3>No current events</h3>
+            <p>No events are currently available for this topic scope.</p>
           </section>
         } @else {
-          <section class="feed-collection" aria-live="polite">
+          <section class="event-list" aria-live="polite">
             @for (item of state.items; track item.id) {
-              <article class="feed-card">
-                <header class="feed-card-meta">
-                  <span class="feed-topic">{{ item.topicLabel }}</span>
-                  <span class="feed-time">{{ item.eventTimeLabel }}</span>
-                </header>
-                <p class="feed-summary">{{ item.summary }}</p>
-                <p class="feed-id">Event #{{ item.id }}</p>
-              </article>
+              <button
+                type="button"
+                class="event-row"
+                [class.event-row--selected]="selectedItem?.id === item.id"
+                (click)="onSelectEvent(item.id)"
+              >
+                <span class="event-row-top">
+                  <span class="event-topic">{{ item.topicLabel }}</span>
+                </span>
+                <span class="event-summary">{{ item.summary }}</span>
+                <span class="event-row-bottom">
+                  <span>{{ item.eventTimeLabel }}</span>
+                  <span>Event #{{ item.id }}</span>
+                </span>
+              </button>
             }
           </section>
+
+          @if (selectedItem) {
+            <section class="event-detail">
+              <div class="event-detail-head">
+                <h3>Selected Event</h3>
+              </div>
+              <p>{{ selectedItem.summary }}</p>
+              <div class="event-detail-meta">
+                <span>{{ selectedItem.topicLabel }}</span>
+                <span>{{ selectedItem.eventTimeLabel }}</span>
+                <span>Event #{{ selectedItem.id }}</span>
+              </div>
+            </section>
+          }
         }
 
         @if (state.nextCursor) {
@@ -92,19 +166,32 @@
             </button>
           </div>
         }
-      </div>
+      </section>
 
-      <aside class="feed-sidepanel" aria-label="Editorial standards">
-        <h3>Information Standard</h3>
-        <p>
-          Feed entries are rendered directly from event-level responses, with strict ordering and
-          id-based upsert behavior.
-        </p>
-        <ul>
-          <li>Ordered exactly as delivered by the backend.</li>
-          <li>Duplicates are replaced by id, never repeated.</li>
-          <li>Timestamps are normalized in one dedicated adapter.</li>
-        </ul>
+      <aside class="terminal-panel panel--content" aria-label="Content sections">
+        <section id="blog-section" class="content-block">
+          <header class="panel-title-row">
+            <h2>Blog Posts</h2>
+          </header>
+
+          <ul class="headline-list">
+            @for (headline of buildBlogHeadlines(selectedItem ?? leadItem, state.selectedTopic); track headline) {
+              <li>{{ headline }}</li>
+            }
+          </ul>
+        </section>
+
+        <section id="news-section" class="content-block">
+          <header class="panel-title-row">
+            <h2>News Posts</h2>
+          </header>
+
+          <ul class="headline-list">
+            @for (headline of buildNewsHeadlines(selectedItem ?? leadItem, state.selectedTopic); track headline) {
+              <li>{{ headline }}</li>
+            }
+          </ul>
+        </section>
       </aside>
     </section>
   </main>

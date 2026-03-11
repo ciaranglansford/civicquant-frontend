@@ -17,6 +17,7 @@ export interface FeedEventDto {
   summary: string;
   topic: FeedTopic;
   event_time: string;
+  impact_score: number;
 }
 
 export interface FeedEventsResponseDto {
@@ -35,6 +36,7 @@ export interface FeedEventViewModel {
   summary: string;
   topic: FeedTopic;
   topicLabel: string;
+  impactScore: number;
   eventTimeRaw: string;
   eventTimeIso: string | null;
   eventTimeLabel: string;

@@ -7,6 +7,7 @@ function item(id: number, summary: string): FeedEventViewModel {
     summary,
     topic: 'macro_econ',
     topicLabel: 'Macro Econ',
+    impactScore: 82,
     eventTimeRaw: '2026-03-01 20:28:48.000',
     eventTimeIso: '2026-03-01T20:28:48.000Z',
     eventTimeLabel: '20:28, 01/03/2026',

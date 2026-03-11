@@ -10,8 +10,17 @@ export function mapFeedEventDtoToViewModel(event: FeedEventDto): FeedEventViewMo
     summary: event.summary,
     topic: event.topic,
     topicLabel: toFeedTopicLabel(event.topic),
+    impactScore: normalizeImpactScore(event.impact_score),
     eventTimeRaw: event.event_time,
     eventTimeIso: parsedDate ? parsedDate.toISOString() : null,
     eventTimeLabel: formatFeedEventTime(parsedDate),
   };
+}
+
+function normalizeImpactScore(value: number): number {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+
+  return Math.min(100, Math.max(0, Math.round(value)));
 }
