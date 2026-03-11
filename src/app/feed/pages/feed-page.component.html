@@ -60,7 +60,10 @@
                 [class.breaking-item--selected]="selectedItem?.id === item.id"
                 (click)="onSelectEvent(item.id)"
               >
-                <p class="breaking-kicker">Breaking Signal</p>
+                <div class="breaking-head">
+                  <p class="breaking-kicker">Breaking Signal</p>
+                  <span class="breaking-score">Impact {{ item.impactScore }}</span>
+                </div>
                 <p class="breaking-summary">{{ item.summary }}</p>
                 <div class="breaking-meta">
                   <span>{{ item.topicLabel }}</span>
@@ -196,3 +199,4 @@
     </section>
   </main>
 }
+

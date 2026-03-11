@@ -189,6 +189,13 @@ h1 {
   background: #ebf4ff;
 }
 
+.breaking-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .breaking-kicker {
   margin: 0;
   font-size: 0.6rem;
@@ -196,6 +203,19 @@ h1 {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #c33a3a;
+}
+
+.breaking-score {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e6b2b2;
+  background: #fff0f0;
+  color: #a33333;
+  border-radius: 999px;
+  padding: 0.08rem 0.36rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
 }
 
 .breaking-summary {
@@ -499,3 +519,5 @@ h1 {
     transform: translateX(-50%);
   }
 }
+
+
